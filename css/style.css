@@ -1,0 +1,48 @@
+body {
+    background-color: #212121;
+    color: #f0f0f0;
+    font-family: sans-serif;
+    margin: 0;
+    padding: 2rem;
+}
+
+h1 {
+    text-align: center;
+    font-size: 3rem;
+    margin-bottom: 2rem;
+}
+
+.game-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.game-grid a {
+    background-color: #333;
+    color: #f0f0f0;
+    text-decoration: none;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    font-size: 1.5rem;
+    transition: transform 0.2s ease-in-out;
+}
+
+.game-grid a:hover {
+    transform: scale(1.05);
+}
+
+/* Responsive layout for mobile devices */
+@media (max-width: 768px) {
+    .game-grid {
+        grid-template-columns: 1fr;
+    }
+
+    h1 {
+        font-size: 2.5rem;
+    }
+}
