@@ -47,14 +47,9 @@ document.addEventListener('DOMContentLoaded', () => {
             pokerTable.classList.add('hidden');
             actionsContainer.classList.add('hidden');
 
-            // Show host controls or waiting message
-            if (myPlayerId === gameState.hostId) {
-                hostControls.classList.remove('hidden');
-                waitingMessage.classList.add('hidden');
-            } else {
-                hostControls.classList.add('hidden');
-                waitingMessage.classList.remove('hidden');
-            }
+            // Show start controls to everyone
+            hostControls.classList.remove('hidden');
+            waitingMessage.classList.add('hidden');
         }
 
         // Update pot

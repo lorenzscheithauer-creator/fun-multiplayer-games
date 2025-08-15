@@ -10,7 +10,6 @@ const io = new Server(server);
 // --- Game State and Logic ---
 
 let gameState = {
-  hostId: null,
   players: {},
   deck: [],
   communityCards: [],
@@ -77,12 +76,6 @@ app.get('/', (req, res) => {
 io.on('connection', (socket) => {
   console.log('A user connected:', socket.id);
 
-  // Designate host if one doesn't exist
-  if (gameState.hostId === null) {
-    gameState.hostId = socket.id;
-    console.log(`Player ${socket.id} has been designated as the host.`);
-  }
-
   // Add new player to the game state
   gameState.players[socket.id] = {
     id: socket.id,
@@ -100,20 +93,6 @@ io.on('connection', (socket) => {
     // Remove player from the game state
     delete gameState.players[socket.id];
 
-    // If the host disconnected, assign a new one
-    if (socket.id === gameState.hostId) {
-      const remainingPlayers = Object.keys(gameState.players);
-      if (remainingPlayers.length > 0) {
-        gameState.hostId = remainingPlayers[0];
-        console.log(`Host disconnected. New host is ${gameState.hostId}`);
-      } else {
-        // No players left, reset host
-        gameState.hostId = null;
-        gameState.gameInProgress = false; // Also reset game
-        console.log("Last player left. Host reset.");
-      }
-    }
-
     // TODO: Add logic to handle game state if a player disconnects mid-game
     if (Object.keys(gameState.players).length < 2 && gameState.gameInProgress) {
         console.log("Not enough players, game paused.");
@@ -125,9 +104,9 @@ io.on('connection', (socket) => {
   });
 
   socket.on('requestStartGame', ({ startingChips }) => {
-    // Only the host can start the game
-    if (socket.id === gameState.hostId) {
-      console.log(`Host ${socket.id} started the game with ${startingChips} chips.`);
+    // Any player can start the game, as long as it's not already in progress
+    if (!gameState.gameInProgress) {
+      console.log(`Player ${socket.id} started the game with ${startingChips} chips.`);
       startGame(startingChips);
       io.emit('gameState', gameState); // Broadcast the new state
     }
