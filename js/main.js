@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const nameModalOverlay = document.getElementById('name-modal-overlay');
     const nameInput = document.getElementById('name-input');
     const confirmNameButton = document.getElementById('confirm-name-button');
+    const randomNameButton = document.getElementById('random-name-button');
     const createGroupButton = document.getElementById('create-group-button');
     const groupLobbyContainer = document.querySelector('.group-lobby-container');
     const gameGrid = document.querySelector('.game-grid');
@@ -50,11 +51,29 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- Socket Event Handlers ---
+    socket.on('connect', () => {
+        console.log('Connected to server!');
+        confirmNameButton.disabled = false;
+    });
+
     socket.on('update-groups', (groups) => {
         renderLobby(groups);
     });
 
+    function generateRandomName() {
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+        let result = '';
+        for (let i = 0; i < 7; i++) {
+            result += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        return result;
+    }
+
     // --- UI Event Listeners ---
+    randomNameButton.addEventListener('click', () => {
+        nameInput.value = generateRandomName();
+    });
+
     createGroupButton.addEventListener('click', () => {
         socket.emit('create-group');
     });

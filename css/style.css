@@ -121,6 +121,12 @@ h1 {
     width: 100%;
     padding: 10px;
     margin-bottom: 1.5rem;
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
     border-radius: 5px;
     border: 1px solid #666;
     background-color: #555;
