@@ -9,6 +9,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const groupLobbyContainer = document.querySelector('.group-lobby-container');
     const gameGrid = document.querySelector('.game-grid');
 
+    if (!nameModalOverlay || !nameInput || !confirmNameButton || !createGroupButton || !groupLobbyContainer || !gameGrid) {
+        console.error('A critical UI element was not found. Check all IDs and classes in index.html.');
+        return;
+    }
+
     // --- Client-Side State ---
     let myPlayerName = null;
 
