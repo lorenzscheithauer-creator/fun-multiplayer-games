@@ -1,10 +1,15 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // --- DOM Elements ---
+    // --- Modal Elements ---
+    const nameModalOverlay = document.getElementById('name-modal-overlay');
+    const nameInput = document.getElementById('name-input');
+    const confirmNameButton = document.getElementById('confirm-name-button');
+
+    // --- Lobby Elements ---
     const createGroupButton = document.getElementById('create-group-button');
     const groupLobbyContainer = document.querySelector('.group-lobby-container');
     const gameGrid = document.querySelector('.game-grid');
 
-    if (!createGroupButton || !groupLobbyContainer || !gameGrid) {
+    if (!createGroupButton || !groupLobbyContainer || !gameGrid || !nameModalOverlay) {
         console.error('Required UI elements not found!');
         return;
     }
@@ -119,6 +124,30 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     gameGrid.addEventListener('click', handleGameSelect);
 
+    // --- Name Modal Logic ---
+    function initNameModal() {
+        const playerName = localStorage.getItem('playerName');
+        if (playerName) {
+            nameModalOverlay.classList.add('hidden');
+            // Update the player ID with the stored name
+            myPlayerId = playerName;
+        } else {
+            nameModalOverlay.classList.remove('hidden');
+        }
+    }
+
+    confirmNameButton.addEventListener('click', () => {
+        const playerName = nameInput.value.trim();
+        if (playerName) {
+            localStorage.setItem('playerName', playerName);
+            myPlayerId = playerName;
+            nameModalOverlay.classList.add('hidden');
+        } else {
+            alert('Please enter a name.');
+        }
+    });
+
     renderLobby(); // Initial render
+    initNameModal(); // Check for name on page load
     console.log(`Lobby script loaded for ${myPlayerId}.`);
 });
