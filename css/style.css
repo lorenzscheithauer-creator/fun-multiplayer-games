@@ -46,3 +46,46 @@ h1 {
         font-size: 2.5rem;
     }
 }
+
+/* --- Group Lobby Styles --- */
+
+.actions-bar {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.action-button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.action-button:hover {
+    background-color: #0056b3;
+}
+
+.group-lobby-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding-bottom: 4rem; /* Add some space at the bottom */
+}
+
+/* This is a placeholder style for the tickets that will be added later */
+.group-ticket {
+    background-color: #333;
+    color: #f0f0f0;
+    text-decoration: none;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    font-size: 1.5rem;
+}
