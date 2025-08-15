@@ -1,0 +1,21 @@
+{
+  "name": "fun-multiplayer-games",
+  "version": "1.0.0",
+  "description": "A collection of fun multiplayer games.",
+  "main": "games/poker-server.js",
+  "scripts": {
+    "start": "node games/poker-server.js"
+  },
+  "keywords": [
+    "games",
+    "multiplayer",
+    "socket.io",
+    "express"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+    "socket.io": "^4.7.2"
+  }
+}
