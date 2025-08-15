@@ -17,7 +17,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const betSlider = document.getElementById('bet-slider');
     const betAmountSpan = document.getElementById('bet-amount');
     const startGameButton = document.getElementById('start-game-button');
-    const startingChipsInput = document.getElementById('starting-chips');
 
     let myPlayerId = null;
 
@@ -142,8 +141,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     startGameButton.addEventListener('click', () => {
-        const startingChips = parseInt(startingChipsInput.value, 10);
-        socket.emit('requestStartGame', { startingChips });
+        socket.emit('requestStartGame');
     });
 
     console.log('Poker client script loaded.');

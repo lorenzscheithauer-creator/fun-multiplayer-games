@@ -103,11 +103,11 @@ io.on('connection', (socket) => {
     io.emit('gameState', gameState);
   });
 
-  socket.on('requestStartGame', ({ startingChips }) => {
+  socket.on('requestStartGame', () => {
     // Any player can start the game, as long as it's not already in progress
     if (!gameState.gameInProgress) {
-      console.log(`Player ${socket.id} started the game with ${startingChips} chips.`);
-      startGame(startingChips);
+      console.log(`Player ${socket.id} started the game.`);
+      startGame(); // Starts with default 1000 chips
       io.emit('gameState', gameState); // Broadcast the new state
     }
   });
