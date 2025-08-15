@@ -2,9 +2,9 @@
   "name": "fun-multiplayer-games",
   "version": "1.0.0",
   "description": "A collection of fun multiplayer games.",
-  "main": "games/poker-server.js",
+  "main": "lobby-server.js",
   "scripts": {
-    "start": "node games/poker-server.js"
+    "start": "node lobby-server.js"
   },
   "keywords": [
     "games",
