@@ -101,7 +101,8 @@ document.addEventListener('DOMContentLoaded', () => {
             nameModalOverlay.classList.add('hidden');
             socket.emit('register-name', myPlayerName);
         } else {
-            nameModalOverlay.classList.remove('hidden');
+            // Temporarily disabled by user request
+            nameModalOverlay.classList.add('hidden');
         }
     }
 
