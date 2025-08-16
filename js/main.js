@@ -2,15 +2,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const socket = io();
 
     // --- DOM Elements ---
-    const nameModalOverlay = document.getElementById('name-modal-overlay');
-    const nameInput = document.getElementById('name-input');
-    const confirmNameButton = document.getElementById('confirm-name-button');
-    const randomNameButton = document.getElementById('random-name-button');
     const createGroupButton = document.getElementById('create-group-button');
     const groupLobbyContainer = document.querySelector('.group-lobby-container');
     const gameGrid = document.querySelector('.game-grid');
 
-    if (!nameModalOverlay || !nameInput || !confirmNameButton || !createGroupButton || !groupLobbyContainer || !gameGrid) {
+    if (!createGroupButton || !groupLobbyContainer || !gameGrid) {
         console.error('A critical UI element was not found. Check all IDs and classes in index.html.');
         return;
     }
@@ -53,35 +49,21 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Socket Event Handlers ---
     socket.on('connect', () => {
         console.log('Connected to server!');
-        // Re-evaluate button state on connection, in case a name was typed before connecting
-        if (nameInput.value.trim().length > 0) {
-            confirmNameButton.disabled = false;
-        }
+        // Name feature removed. Register with the server to get a default name.
+        socket.emit('register-name', null);
+    });
+
+    // The server will send back the assigned name
+    socket.on('registration-successful', (assignedName) => {
+        myPlayerName = assignedName;
+        console.log(`Registered with server as: ${myPlayerName}`);
     });
 
     socket.on('update-groups', (groups) => {
         renderLobby(groups);
     });
 
-    function generateRandomName() {
-        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
-        let result = '';
-        for (let i = 0; i < 7; i++) {
-            result += chars.charAt(Math.floor(Math.random() * chars.length));
-        }
-        return result;
-    }
-
     // --- UI Event Listeners ---
-    nameInput.addEventListener('input', () => {
-        confirmNameButton.disabled = nameInput.value.trim() === '';
-    });
-
-    randomNameButton.addEventListener('click', () => {
-        nameInput.value = generateRandomName();
-        confirmNameButton.disabled = false; // Enable confirm button
-    });
-
     createGroupButton.addEventListener('click', () => {
         socket.emit('create-group');
     });
@@ -93,29 +75,5 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // --- Name Modal Logic ---
-    function initNameModal() {
-        const storedName = localStorage.getItem('playerName');
-        if (storedName) {
-            myPlayerName = storedName;
-            nameModalOverlay.classList.add('hidden');
-            socket.emit('register-name', myPlayerName);
-        } else {
-            nameModalOverlay.classList.remove('hidden');
-        }
-    }
-
-    confirmNameButton.addEventListener('click', () => {
-        const playerName = nameInput.value.trim();
-        if (playerName) {
-            myPlayerName = playerName;
-            localStorage.setItem('playerName', myPlayerName);
-            nameModalOverlay.classList.add('hidden');
-            socket.emit('register-name', myPlayerName);
-        }
-        // No 'else' needed, as the button should be disabled if the input is empty.
-    });
-
-    initNameModal();
     console.log('Lobby script loaded.');
 });
