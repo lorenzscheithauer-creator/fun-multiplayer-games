@@ -53,7 +53,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Socket Event Handlers ---
     socket.on('connect', () => {
         console.log('Connected to server!');
-        confirmNameButton.disabled = false;
+        // Re-evaluate button state on connection, in case a name was typed before connecting
+        if (nameInput.value.trim().length > 0) {
+            confirmNameButton.disabled = false;
+        }
     });
 
     socket.on('update-groups', (groups) => {
@@ -70,8 +73,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- UI Event Listeners ---
+    nameInput.addEventListener('input', () => {
+        confirmNameButton.disabled = nameInput.value.trim() === '';
+    });
+
     randomNameButton.addEventListener('click', () => {
         nameInput.value = generateRandomName();
+        confirmNameButton.disabled = false; // Enable confirm button
     });
 
     createGroupButton.addEventListener('click', () => {
@@ -104,9 +112,8 @@ document.addEventListener('DOMContentLoaded', () => {
             localStorage.setItem('playerName', myPlayerName);
             nameModalOverlay.classList.add('hidden');
             socket.emit('register-name', myPlayerName);
-        } else {
-            alert('Please enter a name.');
         }
+        // No 'else' needed, as the button should be disabled if the input is empty.
     });
 
     initNameModal();
