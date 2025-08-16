@@ -26,7 +26,8 @@ io.on('connection', (socket) => {
     socket.on('register-name', (name) => {
         socket.playerName = name || `Player${socket.id.substring(0,4)}`;
         console.log(`${socket.id} registered as ${socket.playerName}`);
-        // Send the current list of groups to the newly connected client
+        // Send the assigned name and current groups back to the newly connected client
+        socket.emit('registration-successful', socket.playerName);
         socket.emit('update-groups', groups);
     });
 
