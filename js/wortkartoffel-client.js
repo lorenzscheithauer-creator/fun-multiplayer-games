@@ -53,19 +53,26 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateUI(gameState) {
         if (!gameState || !gameState.players) return;
 
-        // Dynamically create and position player areas
-        playersContainer.innerHTML = '';
-        const playerAreas = ['p1', 'p2', 'p3', 'p4', 'p5', 'p6', 'p7'];
+        playersContainer.innerHTML = ''; // Clear existing players
+
+        const numPlayers = gameState.players.length;
+        const containerRect = playersContainer.getBoundingClientRect();
+        const centerX = containerRect.width / 2;
+        const centerY = containerRect.height / 2;
+        const radiusX = centerX * 0.85; // Use 85% of the radius for spacing
+        const radiusY = centerY * 0.8;
 
         gameState.players.forEach((player, index) => {
+            // Calculate player position in a circle
+            const angle = (index / numPlayers) * 2 * Math.PI - (Math.PI / 2); // Start at the top
+            const x = centerX + radiusX * Math.cos(angle);
+            const y = centerY + radiusY * Math.sin(angle);
+
             const playerArea = document.createElement('div');
             playerArea.className = 'player-area';
             playerArea.id = `player-${player.id}`;
-            // Assign grid area based on index. This is a simple layout for up to 4 players.
-            // It needs to be more robust for more players.
-            if(index < playerAreas.length) {
-                playerArea.style.gridArea = playerAreas[index];
-            }
+            playerArea.style.left = `${x}px`;
+            playerArea.style.top = `${y}px`;
 
             const isMyTurn = myPlayerId === player.id && myPlayerId === gameState.activePlayerId;
 
@@ -89,9 +96,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const activePlayer = gameState.players.find(p => p.id === gameState.activePlayerId);
         if (activePlayer) {
             const activePlayerIndex = gameState.players.indexOf(activePlayer);
-            // This rotation logic assumes players are laid out evenly in a circle.
-            const angle = (activePlayerIndex / gameState.players.length) * 360;
-            potatoArrow.style.transform = `rotate(${angle}deg)`;
+            const angleInDegrees = (activePlayerIndex / numPlayers) * 360 - 90; // -90deg to start from top
+            potatoArrow.style.transform = `rotate(${angleInDegrees + 90}deg)`; // +90deg to align arrow model
         }
 
         usedWordsList.innerHTML = '';
