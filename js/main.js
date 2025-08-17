@@ -3,77 +3,136 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- DOM Elements ---
     const createGroupButton = document.getElementById('create-group-button');
+    const joinGroupButton = document.getElementById('join-group-button');
     const groupLobbyContainer = document.querySelector('.group-lobby-container');
-    const gameGrid = document.querySelector('.game-grid');
 
-    if (!createGroupButton || !groupLobbyContainer || !gameGrid) {
-        console.error('A critical UI element was not found. Check all IDs and classes in index.html.');
-        return;
-    }
+    const joinGroupModal = document.getElementById('join-group-modal');
+    const closeJoinModalButton = document.getElementById('close-join-modal-button');
+    const confirmJoinButton = document.getElementById('confirm-join-button');
+    const joinCodeInput = document.getElementById('join-code-input');
+
+    const gameGrid = document.querySelector('.game-grid');
 
     // --- Client-Side State ---
     let myPlayerName = null;
+    let myGroup = null;
 
-    // --- Rendering ---
-    function renderLobby(groups) {
-        groupLobbyContainer.innerHTML = ''; // Clear the container
+    // --- UI Rendering ---
+    function renderGroupLobby(group) {
+        myGroup = group;
+        groupLobbyContainer.innerHTML = '';
 
-        if (!groups) return;
+        if (!group) {
+            gameGrid.classList.remove('leader');
+            return;
+        }
 
-        groups.forEach(group => {
-            const ticket = document.createElement('div');
-            ticket.className = 'group-ticket';
-            ticket.dataset.groupId = group.id;
+        const isLeader = myPlayerName === group.leaderName;
+        const groupInfo = document.createElement('div');
+        groupInfo.className = 'group-info-ticket';
 
-            const isLeader = group.leaderName === myPlayerName;
-            const isMember = group.players.includes(myPlayerName);
-            const isFull = group.players.length >= group.maxSize;
+        let playersHTML = group.players.map(p =>
+            `<li>${p.name} ${p.name === group.leaderName ? '<b>(Leader)</b>' : ''}</li>`
+        ).join('');
 
-            // This logic will be re-added later. For now, focus on server sync.
-            let gameSelectionHTML = '';
-            let startButtonHTML = '';
+        groupInfo.innerHTML = `
+            <h3>Gruppe von ${group.leaderName}</h3>
+            <p>Ticket-Code: <strong class="ticket-code">${group.ticketCode}</strong></p>
+            <h4>Spieler (${group.players.length}/${group.maxSize}):</h4>
+            <ul>${playersHTML}</ul>
+        `;
 
-            ticket.innerHTML = `
-                <div class="group-ticket__name">Gruppe von ${group.leaderName}</div>
-                <div class="group-ticket__players">
-                    <span class="player-count">${group.players.length}</span>/${group.maxSize}
-                </div>
-                ${gameSelectionHTML}
-                <button class="action-button join-button" ${isMember || isFull ? 'disabled' : ''}>${isMember ? 'Beigetreten' : 'Beitreten'}</button>
-                ${startButtonHTML}
-            `;
-            groupLobbyContainer.appendChild(ticket);
+        if (isLeader) {
+            const startGameButton = document.createElement('button');
+            startGameButton.className = 'action-button';
+            startGameButton.id = 'leader-start-game-button';
+            startGameButton.textContent = 'Spiel starten';
+
+            if (group.players.length < 2) {
+                startGameButton.disabled = true;
+                startGameButton.title = 'Mindestens 2 Spieler benötigt';
+            }
+            groupInfo.appendChild(startGameButton);
+
+            startGameButton.addEventListener('click', () => {
+                const selectedGame = document.querySelector('.game-grid a.selected');
+                if (!selectedGame) {
+                    alert('Bitte wähle ein Spiel aus!');
+                    return;
+                }
+
+                // The server will handle starting the game for the selected game
+                // For now, we assume the leader's click is the trigger.
+                // A better implementation would have the game selection also emit an event.
+                if (selectedGame.id === 'game-wortkartoffel') {
+                     // On the game page, the leader would get the settings modal.
+                     // The server needs to know which group is navigating.
+                     // A simple redirect is not enough for a real system.
+                     // This part of the logic needs more thought in a real scenario.
+                     window.location.href = selectedGame.href;
+                } else {
+                     alert(`Start für ${selectedGame.textContent} noch nicht implementiert.`);
+                }
+            });
+        }
+
+        groupLobbyContainer.appendChild(groupInfo);
+
+        // Toggle game selection based on leader status
+        const gameLinks = document.querySelectorAll('.game-grid a');
+        gameLinks.forEach(link => {
+            link.classList.toggle('disabled', !isLeader);
         });
     }
+
+
+    // --- Event Listeners ---
+    createGroupButton.addEventListener('click', () => socket.emit('create-group'));
+    joinGroupButton.addEventListener('click', () => joinGroupModal.classList.remove('hidden'));
+    closeJoinModalButton.addEventListener('click', () => joinGroupModal.classList.add('hidden'));
+
+    confirmJoinButton.addEventListener('click', () => {
+        const code = joinCodeInput.value.trim().toUpperCase();
+        if (code) {
+            socket.emit('join-group-with-code', code);
+            joinCodeInput.value = '';
+            joinGroupModal.classList.add('hidden');
+        }
+    });
+
+    gameGrid.addEventListener('click', (e) => {
+        const targetLink = e.target.closest('a');
+        if (targetLink && myGroup && myPlayerName === myGroup.leaderName) {
+            e.preventDefault(); // Prevent navigation
+            document.querySelectorAll('.game-grid a').forEach(link => link.classList.remove('selected'));
+            targetLink.classList.add('selected');
+        } else if (targetLink) {
+            e.preventDefault(); // Prevent non-leaders from navigating
+        }
+    });
+
 
     // --- Socket Event Handlers ---
     socket.on('connect', () => {
         console.log('Connected to server!');
-        // Name feature removed. Register with the server to get a default name.
-        socket.emit('register-name', null);
+        const storedName = localStorage.getItem('playerName');
+        socket.emit('register-name', storedName);
     });
 
-    // The server will send back the assigned name
     socket.on('registration-successful', (assignedName) => {
         myPlayerName = assignedName;
+        if (!localStorage.getItem('playerName')) {
+            localStorage.setItem('playerName', assignedName);
+        }
         console.log(`Registered with server as: ${myPlayerName}`);
     });
 
-    socket.on('update-groups', (groups) => {
-        renderLobby(groups);
+    socket.on('group-state-update', (groupState) => {
+        console.log('Group state update:', groupState);
+        renderGroupLobby(groupState);
     });
 
-    // --- UI Event Listeners ---
-    createGroupButton.addEventListener('click', () => {
-        socket.emit('create-group');
+    socket.on('join-error', (error) => {
+        alert(`Could not join group: ${error.message}`);
     });
-
-    groupLobbyContainer.addEventListener('click', (e) => {
-        if (e.target.classList.contains('join-button')) {
-            const groupId = e.target.closest('.group-ticket').dataset.groupId;
-            socket.emit('join-group', groupId);
-        }
-    });
-
-    console.log('Lobby script loaded.');
 });
