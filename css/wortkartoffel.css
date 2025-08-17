@@ -13,26 +13,41 @@ body {
 
 #game-container {
     position: relative;
-    width: 90vw;
-    height: 90vh;
+    width: 95vw;
+    height: 95vh;
     border: 2px solid #34495e;
     border-radius: 20px;
     background-color: #34495e;
-    display: grid;
-    grid-template-columns: 1fr 400px 1fr;
-    grid-template-rows: 1fr 400px 1fr;
-    grid-template-areas:
-        "p1 p1 p2"
-        "p4 potato p2"
-        "p4 p3 p3";
-}
-
-#potato-container {
-    grid-area: potato;
     display: flex;
     justify-content: center;
     align-items: center;
-    position: relative;
+}
+
+#players-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.player-area {
+    position: absolute;
+    width: 220px; /* A fixed width for player cards */
+    padding: 15px;
+    text-align: center;
+    transform: translate(-50%, -50%); /* This centers the element on its calculated (top, left) position */
+    transition: top 0.5s ease-in-out, left 0.5s ease-in-out; /* Smooth transitions */
+    background-color: rgba(0,0,0,0.2);
+    border-radius: 10px;
+}
+
+#potato-container {
+    position: relative; /* Stays in the flex-centered middle */
+    z-index: 10;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 #potato {
@@ -62,20 +77,9 @@ body {
     border-bottom: 200px solid #c0392b;
     transform-origin: bottom center;
     transition: transform 0.5s ease-in-out;
-    /* Example: pointing to player 1 (top-left) */
-    transform: rotate(-45deg);
+    transform: rotate(0deg); /* Default rotation, JS will update this */
+    z-index: 11; /* Above potato, below players */
 }
-
-.player-area {
-    padding: 20px;
-    text-align: center;
-}
-
-#player-1 { grid-area: p1; align-self: start; }
-#player-2 { grid-area: p2; justify-self: end; }
-#player-3 { grid-area: p3; align-self: end; }
-#player-4 { grid-area: p4; justify-self: start; }
-
 
 .player-name {
     font-size: 1.5rem;
@@ -163,6 +167,7 @@ body {
     transform: translateX(-50%);
     font-size: 2.5rem;
     font-weight: bold;
+    z-index: 20;
 }
 
 #used-words-container {
@@ -175,4 +180,5 @@ body {
     background-color: rgba(0,0,0,0.2);
     padding: 10px;
     border-radius: 5px;
+    z-index: 20;
 }
