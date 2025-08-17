@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wortkartoffel</title>
+    <link rel="stylesheet" href="../css/style.css"> <!-- General Styles -->
+    <link rel="stylesheet" href="../css/wortkartoffel.css"> <!-- Game-specific Styles -->
+</head>
+<body>
+    <!-- Settings Icon -->
+    <div id="settings-icon">⚙️</div>
+
+    <!-- Settings Modal -->
+    <div id="settings-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <h2>Einstellungen</h2>
+
+            <div class="setting">
+                <label for="language-switch">Sprache:</label>
+                <select id="language-switch">
+                    <option value="de">Deutsch</option>
+                    <option value="en">Englisch</option>
+                </select>
+            </div>
+
+            <div class="setting">
+                <label for="start-timer-slider">Rundenzeit: <span id="start-timer-value">30</span>s</label>
+                <input type="range" id="start-timer-slider" min="20" max="50" value="30" step="10">
+            </div>
+
+            <div class="setting">
+                <label for="time-bonus-slider">Zeitbonus: <span id="time-bonus-value">5</span>s</label>
+                <input type="range" id="time-bonus-slider" min="3" max="10" value="5" step="1">
+            </div>
+
+            <div class="setting">
+                <label for="lives-slider">Anzahl Leben: <span id="lives-value">3</span> ❤️</label>
+                <input type="range" id="lives-slider" min="1" max="5" value="3" step="1">
+            </div>
+
+            <button id="start-game-button">Spiel starten</button>
+            <button id="close-settings-button">Schließen</button>
+        </div>
+    </div>
+
+    <!-- Main Game Area -->
+    <div id="game-container">
+        <div id="potato-container">
+            <div id="potato-arrow"></div>
+            <div id="potato">
+                <span id="syllable">SYL</span>
+            </div>
+        </div>
+
+        <div id="players-container">
+            <!-- Player areas will be dynamically generated, but here's a static example for 4 players -->
+            <div class="player-area" id="player-1" data-player-id="1">
+                <div class="player-info">
+                    <span class="player-name">Spieler 1</span>
+                    <div class="player-lives">❤️❤️❤️</div>
+                </div>
+                <input type="text" class="word-input" placeholder="Wort eingeben...">
+            </div>
+            <div class="player-area" id="player-2" data-player-id="2">
+                <div class="player-info">
+                    <span class="player-name">Spieler 2</span>
+                    <div class="player-lives">❤️❤️❤️</div>
+                </div>
+                 <input type="text" class="word-input hidden" placeholder="Wort eingeben...">
+            </div>
+            <div class="player-area" id="player-3" data-player-id="3">
+                <div class="player-info">
+                    <span class="player-name">Spieler 3</span>
+                    <div class="player-lives">❤️❤️❤️</div>
+                </div>
+                 <input type="text" class="word-input hidden" placeholder="Wort eingeben...">
+            </div>
+            <div class="player-area" id="player-4" data-player-id="4">
+                <div class="player-info">
+                    <span class="player-name">Spieler 4</span>
+                    <div class="player-lives">❤️❤️❤️</div>
+                </div>
+                 <input type="text" class="word-input hidden" placeholder="Wort eingeben...">
+            </div>
+        </div>
+
+        <div id="timer-container">
+            <span id="timer">30</span>s
+        </div>
+
+        <div id="used-words-container">
+            <h3>Benutzte Wörter:</h3>
+            <ul id="used-words-list">
+                <!--<li>Beispielwort</li>-->
+            </ul>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="../js/wortkartoffel-client.js"></script>
+</body>
+</html>
