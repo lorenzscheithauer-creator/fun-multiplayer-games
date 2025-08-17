@@ -36,6 +36,30 @@ h1 {
     transform: scale(1.05);
 }
 
+.game-grid a.disabled {
+    pointer-events: none;
+    opacity: 0.5;
+}
+
+.game-grid a.selected {
+    border: 3px solid #f1c40f;
+    box-shadow: 0 0 15px #f1c40f;
+}
+
+#game-poker {
+    background: linear-gradient(135deg, #004d00, #002900);
+    color: white;
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+#game-wortkartoffel {
+    background: linear-gradient(135deg, #d35400, #a04000);
+    color: white;
+    font-size: 2rem;
+    font-weight: bold;
+}
+
 /* Responsive layout for mobile devices */
 @media (max-width: 768px) {
     .game-grid {

@@ -9,20 +9,33 @@
 <body>
     <h1>Fun Multiplayer Games</h1>
 <div class="game-grid">
-        <a href="games/game1.html">Spiel 1</a>
-        <a href="games/game2.html">Spiel 2</a>
+        <a href="games/poker.html" id="game-poker">Poker</a>
+        <a href="games/wortkartoffel.html" id="game-wortkartoffel">Wortkartoffel</a>
         <a href="games/game3.html">Spiel 3</a>
         <a href="games/game4.html">Spiel 4</a>
         <a href="games/game5.html">Spiel 5</a>
         <a href="games/game6.html">Spiel 6</a>
     </div>
 
-    <h2 style="text-align: center; margin-top: 4rem;">Öffentliche Gruppen</h2>
+    <h2 style="text-align: center; margin-top: 4rem;">Gruppe</h2>
     <div class="actions-bar">
         <button class="action-button" id="create-group-button">Neue Gruppe erstellen</button>
+        <button class="action-button" id="join-group-button">Gruppe beitreten</button>
     </div>
     <div class="group-lobby-container">
-        <!-- Group tickets will be dynamically added here -->
+        <!-- Group info will be dynamically added here -->
+    </div>
+
+    <div id="join-group-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <h2>Gruppe beitreten</h2>
+            <p>Gib den Ticket-Code der Gruppe ein:</p>
+            <input type="text" id="join-code-input" placeholder="AB123" maxlength="6" style="text-transform:uppercase">
+            <div class="modal-buttons">
+                <button id="confirm-join-button" class="action-button">Beitreten</button>
+                <button id="close-join-modal-button" class="action-button">Abbrechen</button>
+            </div>
+        </div>
     </div>
 
     <script src="/socket.io/socket.io.js"></script>
